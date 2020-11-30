@@ -5,6 +5,9 @@ import {
   Inject,
   Injectable,
   Get,
+  Query,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { CriarJogadorDto } from './dtos/criar-jogador.dto';
 import { JogadoresService } from './jogadores.service';
@@ -18,7 +21,18 @@ export class JogadoresController {
   }
 
   @Get()
-  async consultarJogadores(): Promise<Jogador[]> {
-    return this.jogadoresService.consultarTodosJogadores();
+  async consultarJogador(
+    @Query('email') email: string,
+  ): Promise<Jogador | Jogador[]> {
+    if (email) {
+      return this.jogadoresService.consultarJogadorPeloEmail(email);
+    } else {
+      return this.jogadoresService.consultarTodosJogadores();
+    }
+  }
+
+  @Delete('/:email')
+  async deletarJogador(@Param('email') email: string): Promise<void> {
+    this.jogadoresService.deletarJogador(email);
   }
 }
