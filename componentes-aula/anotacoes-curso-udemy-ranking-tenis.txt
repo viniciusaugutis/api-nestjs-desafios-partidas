@@ -1,0 +1,17 @@
+npm i -g @nestjs/cli
+nest new api-smartranking
+yarn start:dev
+
+Toda aplicação NEST precisa ter no mínimo 1 módulo.
+
+https://gitlab.com/dfs-treinamentos/smart-ranking/api-smartranking-backend/-/tree/aula-1
+
+nest g module jogadores
+
+nest g controller jogadores
+
+nest g service jogadores
+
+MONGOOSE
+
+yarn add @nestjs/mongoose
