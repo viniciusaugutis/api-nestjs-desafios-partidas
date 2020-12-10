@@ -29,12 +29,17 @@ export class DesafiosService {
       Verificar se os jogadores informados estão cadastrados
     */
 
-    criarDesafioDto.jogadores.map((jogador) => {
-      const jogadorEncontrado = this.jogadorService.consultarJogadorPeloId(
-        jogador.id,
+    const jogadores = await this.jogadorService.consultarTodosJogadores();
+
+    criarDesafioDto.jogadores.map((jogadorDto) => {
+      const jogadorFilter = jogadores.filter(
+        (jogador) => jogador._id == jogadorDto._id,
       );
-      if (!jogadorEncontrado) {
-        throw new NotFoundException('Jogador não encontrado');
+
+      if (jogadorFilter.length == 0) {
+        throw new BadRequestException(
+          `O id ${jogadorDto._id} não é um jogador!`,
+        );
       }
     });
 
@@ -43,7 +48,7 @@ export class DesafiosService {
     */
 
     const jogadorDesafio = criarDesafioDto.jogadores.find(
-      (item) => item.id === criarDesafioDto.solicitante.id,
+      (item) => item._id === criarDesafioDto.solicitante,
     );
 
     if (!jogadorDesafio) {
@@ -52,29 +57,15 @@ export class DesafiosService {
       );
     }
 
-    const todasCategorias = await this.categoriaService.consultarCategorias();
-
-    const categoriasSolicitante = todasCategorias.filter((categoria) => {
-      return categoria.jogadores.find(
-        (jogador) => jogador.id === criarDesafioDto.solicitante.id,
-      );
-    });
-
-    if (
-      !categoriasSolicitante &&
-      categoriasSolicitante &&
-      !categoriasSolicitante[0]
-    ) {
-      throw new BadRequestException(
-        'Jogador não está vinculado em uma categoria',
-      );
-    }
+    const categoriaDoJogador = await this.categoriaService.consultarCategoriaDoJogador(
+      criarDesafioDto.solicitante,
+    );
 
     const desafioModel = {
       ...criarDesafioDto,
       dataHoraSolicitacao: new Date(),
       status: DesafioStatus.PENDENTE,
-      categoria: categoriasSolicitante[0].categoria,
+      categoria: categoriaDoJogador.categoria,
     };
 
     const desafioCriado = new this.desafioModel(desafioModel);
@@ -152,7 +143,7 @@ export class DesafiosService {
     const desafioCadastrado = await this.buscarDesafio(id);
 
     const jogadorDoDesafio = desafioCadastrado.jogadores.find(
-      (jogador) => jogador.id == atribuirDesafioPartidaDto.def.id,
+      (jogador) => jogador._id == atribuirDesafioPartidaDto.def,
     );
 
     if (!jogadorDoDesafio) {
