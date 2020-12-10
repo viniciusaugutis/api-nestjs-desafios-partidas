@@ -13,8 +13,8 @@ import {
 import { CriarJogadorDto } from './dtos/criar-jogador.dto';
 import { JogadoresService } from './jogadores.service';
 import { Jogador } from './interfaces/jogador.interface';
-import { JogadoresValidacaoParametrosPipe } from './pipes/jogadores-validacao-parametros.pipe';
 import { AtualizarJogadorDto } from './dtos/atualizar-jogador.dto';
+import { JogadoresValidacaoParametrosPipe } from 'src/common/pipes/jogadores-validacao-parametros.pipe';
 @Controller('api/v1/jogadores')
 export class JogadoresController {
   constructor(private readonly jogadoresService: JogadoresService) {}

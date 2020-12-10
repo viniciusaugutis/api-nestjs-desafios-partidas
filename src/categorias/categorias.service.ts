@@ -109,9 +109,6 @@ export class CategoriasService {
 
     categoriaEncontrada.jogadores.push(idJogador);
 
-    console.log(categoriaEncontrada);
-    console.log(categoria);
-
     await this.categoriaModel
       .findOneAndUpdate({ categoria }, { $set: categoriaEncontrada })
       .exec();

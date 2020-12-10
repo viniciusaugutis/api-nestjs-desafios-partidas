@@ -30,3 +30,7 @@ Novos modulos
 nest g module categorias
 nest g controller categorias
 nest g service categorias
+
+Exception Filters
+
+Para tratamentos de exceção e exception global no Nest
