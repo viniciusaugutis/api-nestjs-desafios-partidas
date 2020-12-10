@@ -24,3 +24,9 @@ Pipes podem lançar exceções
 Ex: ValidationPipe
 
 yarn add class-validator class-transformer
+
+Novos modulos
+
+nest g module categorias
+nest g controller categorias
+nest g service categorias
