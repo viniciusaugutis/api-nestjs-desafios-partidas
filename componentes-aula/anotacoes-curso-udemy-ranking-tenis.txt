@@ -15,3 +15,12 @@ nest g service jogadores
 MONGOOSE
 
 yarn add @nestjs/mongoose
+
+NestJS Pipes
+
+Executam transformações dos dados ou validação de dados
+Pipes podem lançar exceções
+
+Ex: ValidationPipe
+
+yarn add class-validator class-transformer
