@@ -15,11 +15,24 @@ import { Jogador } from './interfaces/jogador.interface';
 @Controller('api/v1/jogadores')
 export class JogadoresController {
   constructor(private readonly jogadoresService: JogadoresService) {}
+  @Post()
+  async criarAtualizarJogador(@Body() criarJogadorDto: CriarJogadorDto) {
+    await this.jogadoresService.criarAtualizarJogador(criarJogadorDto);
+  }
 
   @Get()
   async consultarJogador(
     @Query('email') email: string,
   ): Promise<Jogador | Jogador[]> {
-    return this.jogadoresService.consultarTodosJogadores();
+    if (email) {
+      return this.jogadoresService.consultarJogadorPeloEmail(email);
+    } else {
+      return this.jogadoresService.consultarTodosJogadores();
+    }
+  }
+
+  @Delete('/:email')
+  async deletarJogador(@Param('email') email: string): Promise<void> {
+    this.jogadoresService.deletarJogador(email);
   }
 }
