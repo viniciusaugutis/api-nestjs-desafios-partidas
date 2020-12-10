@@ -56,4 +56,9 @@ export class CategoriasController {
   ): Promise<void> {
     await this.categoriaService.deletarCategoriaPorId(categoria);
   }
+
+  @Post('/:categoria/jogadores/:idJogador')
+  async atribuirCategoriaJogador(@Param() params: string[]): Promise<void> {
+    await this.categoriaService.atribuirCategoriaJogador(params);
+  }
 }

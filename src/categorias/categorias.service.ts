@@ -8,11 +8,13 @@ import { AtualizarCategoriaDto } from './dtos/atualizar-categoria.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Categoria } from './interfaces/categoria.interface';
+import { JogadoresService } from 'src/jogadores/jogadores.service';
 
 @Injectable()
 export class CategoriasService {
   constructor(
     @InjectModel('Categoria') private readonly categoriaModel: Model<Categoria>,
+    private readonly jogadorService: JogadoresService,
   ) {}
 
   async criarCategoria(
@@ -33,7 +35,7 @@ export class CategoriasService {
   }
 
   async consultarCategorias() {
-    return await this.categoriaModel.find().exec();
+    return await this.categoriaModel.find().populate('jogadores').exec();
   }
 
   async consultarCategoriaPorId(categoria: string): Promise<Categoria> {
@@ -74,6 +76,44 @@ export class CategoriasService {
 
     this.categoriaModel
       .findOneAndUpdate({ categoria }, { $set: { atualizarCategoriaDto } })
+      .exec();
+  }
+
+  async atribuirCategoriaJogador(params: string[]): Promise<void> {
+    const categoria = params['categoria'];
+    const idJogador = params['idJogador'];
+
+    const categoriaEncontrada = await this.categoriaModel
+      .findOne({ categoria })
+      .exec();
+
+    const jogadorJaCadastradoCategoria = await this.categoriaModel
+      .find({
+        categoria,
+      })
+      .where('jogadores')
+      .in(idJogador);
+
+    if (
+      jogadorJaCadastradoCategoria &&
+      jogadorJaCadastradoCategoria.length > 0
+    ) {
+      throw new BadRequestException('Jogador já cadastrado na categoria');
+    }
+
+    if (!categoriaEncontrada) {
+      throw new BadRequestException('Jogador ou categoria não encontrados');
+    }
+
+    await this.jogadorService.consultarJogadorPeloId(idJogador);
+
+    categoriaEncontrada.jogadores.push(idJogador);
+
+    console.log(categoriaEncontrada);
+    console.log(categoria);
+
+    await this.categoriaModel
+      .findOneAndUpdate({ categoria }, { $set: categoriaEncontrada })
       .exec();
   }
 }
