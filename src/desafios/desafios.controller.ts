@@ -14,6 +14,7 @@ import { Desafio } from './interfaces/desafio.interface';
 import { DesafiosService } from './desafios.service';
 import { CriarDesafioDto } from './dtos/criar-desafio.dto';
 import { AtualizarDesafioDto } from './dtos/atualizar-desafio.dto';
+import { AtribuirDesafioPartidaDto } from './dtos/atribuir-desafio-partida.dto';
 
 @Controller('api/v1/desafios')
 export class DesafiosController {
@@ -48,6 +49,17 @@ export class DesafiosController {
 
   @Delete('/:id')
   async deletarDesafio(@Param('id') id: string): Promise<void> {
-    await 
+    await this.desafioService.deletarDesafio(id);
+  }
+
+  @Post('/:id/partida')
+  async atribuirDesafioPartida(
+    @Param('id') id: string,
+    @Body() atribuirDesafioPartidaDto: AtribuirDesafioPartidaDto,
+  ): Promise<void> {
+    await this.desafioService.atualizarDesafioPartida(
+      id,
+      atribuirDesafioPartidaDto,
+    );
   }
 }
